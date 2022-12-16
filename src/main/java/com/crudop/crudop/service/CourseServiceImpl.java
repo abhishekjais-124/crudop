@@ -1,6 +1,8 @@
 package com.crudop.crudop.service;
 
+import com.crudop.crudop.dao.CourseDao;
 import com.crudop.crudop.entity.Course;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -8,56 +10,37 @@ import java.util.List;
 
 @Service
 public class CourseServiceImpl implements CourseService {
-    List<Course> list;
+    @Autowired
+    private CourseDao courseDao;
 
     public CourseServiceImpl(){
-        list = new ArrayList<>();
-        list.add(new Course(1L,"Python", "Python oops"));
-        list.add(new Course(2L,"Java", "Java core book"));
+
     }
 
     @Override
     public List<Course> getAllCourses() {
-        return list;
+        return courseDao.findAll();
     }
 
     @Override
     public Course getCourseById(Long courseId) {
-        Course c = null;
-        for(Course course: list){
-            if (course.getId() == courseId){
-                c = course;
-                break;
-            }
-        }
-        return c;
+        return courseDao.findById(courseId).get();
     }
 
     @Override
     public Course addCourse(Course course) {
-        list.add(course);
+        courseDao.save(course);
         return course;
     }
 
     @Override
     public Course updateCourse(Course course) {
-        for(Course c: list){
-            if (course.getId() == c.getId()){
-                c.setTitle(course.getTitle());
-                c.setDescription(course.getDescription());
-                break;
-            }
-        }
+        courseDao.save(course);
         return course;
     }
 
     @Override
     public void deleteCourse(Long courseId) {
-        for(Course course: list){
-            if (course.getId() == courseId){
-                list.remove(course);
-                break;
-            }
-        }
+        courseDao.deleteById(courseId);
     }
 }
